@@ -1,6 +1,7 @@
 package com.company.main.view;
 
 import com.company.main.control.Calculator;
+import com.company.main.control.StorageController;
 import com.company.main.model.DocReader;
 import com.company.main.model.Storage;
 
@@ -11,7 +12,7 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 
 public class MainFrame extends JFrame{
-    private Storage storage;
+    private StorageController sc;
     private DocReader docReader;
     private JFileChooser fileChooser;
     private Calculator calculator;
@@ -19,10 +20,11 @@ public class MainFrame extends JFrame{
     private DefaultListModel listModel;
     private boolean isCalculable;
 
-    public MainFrame() {
+    public MainFrame(StorageController sc) {
         super("Расчет Монте-Карло");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
+        this.sc = sc;
         isCalculable = false;
 
         JMenuBar menuBar = new JMenuBar();
@@ -88,15 +90,14 @@ public class MainFrame extends JFrame{
         fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
         int res = fileChooser.showOpenDialog(MainFrame.this);
         if(res == JFileChooser.APPROVE_OPTION) {
-            storage = new Storage();
-            docReader = new DocReader(storage);
+            docReader = new DocReader(sc.getStorage());
             try {
                 docReader.readData(fileChooser.getSelectedFile());
             } catch (IOException ex) {
                 JOptionPane.showMessageDialog(MainFrame.this, ex.getMessage());
             }
-            new Table(storage);
-            calculator = new Calculator(storage);
+            new Table(sc);
+            calculator = new Calculator(sc);
 
             listModel.removeAllElements();
             listModel.addElement("NPV = " + calculator.getNpv());
