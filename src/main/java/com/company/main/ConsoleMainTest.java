@@ -12,9 +12,8 @@ public class ConsoleMainTest {
     public static void main(String[] args) throws IOException {
         Storage storage = new Storage();
         StorageController sc = new StorageController(storage);
-        DocReader docReader = new DocReader(storage);
+        DocReader docReader = new DocReader(sc);
         docReader.readData(new File("C:\\Users\\safic\\Desktop\\Форма модели.xlsx"));
         Calculator calculator = new Calculator(sc);
-        System.out.println(storage.getCapex()[0]);
     }
 }

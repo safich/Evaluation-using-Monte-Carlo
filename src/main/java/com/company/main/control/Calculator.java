@@ -1,15 +1,12 @@
 package com.company.main.control;
 
-import com.company.main.model.Storage;
 import org.apache.commons.math3.distribution.NormalDistribution;
 import org.apache.poi.ss.formula.functions.Irr;
 
-import java.util.Arrays;
-
 public class Calculator {
-    private StorageController sc;
+    private final StorageController sc;
     private double riskProbLev;
-    private double discRate = 0.12;
+    private int periodIndex;
 
     public Calculator(StorageController sc) {
         this.sc = sc;
@@ -21,66 +18,479 @@ public class Calculator {
         return distribution.inverseCumulativeProbability(riskProbLev);
     }
 
-    public double getNpv() {
-        double npv = 0;
+    public double calcStorageNpv() {
         double[] array = sc.getStorage().getDiscMonFlow();
+        double npv = 0;
         for (double d: array) {
             npv = npv + d;
         }
         return npv;
     }
 
-    public double getIrr() {
+    public double calcStorageIrr() {
         return Irr.irr(sc.getStorage().getMonFlow());
     }
 
-    public double getPi() {
-        double res;
+    public double calcStoragePi() {
         double sum1 = 0;
         double sum2;
         for (int i = 2; i < sc.getStorage().getPeriod() - 1; i++) {
             sum1 = sum1 + sc.getStorage().getDiscMonFlow()[i];
         }
         sum2 = sc.getStorage().getDiscMonFlow()[0] + sc.getStorage().getDiscMonFlow()[1];
-        res = sum1/(-1 * sum2);
-        return res;
+        return sum1 / (-1 * sum2);
     }
 
-    private double getNpvForRevRes(double mean, double standDev, int year) {
-        int y = 0;
-        switch (year) {
-            case (2021): y = 0;
-            case (2022): y = 1;
-            case (2023): y = 2;
-            case (2024): y = 3;
-            case (2025): y = 4;
-            case (2026): y = 5;
-            case (2027): y = 6;
-            case (2028): y = 7;
-            case (2029): y = 8;
-            case (2030): y = 9;
-            case (2031): y = 10;
-            case (2032): y = 11;
-            case (2033): y = 12;
-            case (2034): y = 13;
-            case (2035): y = 14;
-            case (2036): y = 15;
-            case (2037): y = 16;
-        }
-        double npv = ((((getNormDist(mean,standDev) - sc.getStorage().getCostRes()[y] - sc.getStorage().getSevCost()[y] - sc.getStorage().getDep()[y] - sc.getStorage().getOpRev()[y])
-                - sc.getStorage().getIntPays()[y]) - sc.getStorage().getRevTaxPays()[y]) - sc.getStorage().getCapex()[y])/Math.pow((1 + discRate),(year - sc.getStorage().getRepPeriod()));
-        for (int i = 1; i < 16; i++) {
-            npv = npv + sc.getStorage().getDiscMonFlow()[i];
-        }
-        return npv;
+    public double getRiskProbLev() {
+        return riskProbLev;
     }
 
-    public double[] calcNpvForRevRes(double mean, double standDev, int testsNum, int year) {
-        double[] array = new double[testsNum];
+    private void definePeriod(int year) {
+        switch(year) {
+            case 2021: periodIndex = 0;
+                break;
+            case 2022: periodIndex = 1;
+                break;
+            case 2023: periodIndex = 2;
+                break;
+            case 2024: periodIndex = 3;
+                break;
+            case 2025: periodIndex = 4;
+                break;
+            case 2026: periodIndex = 5;
+                break;
+            case 2027: periodIndex = 6;
+                break;
+            case 2028: periodIndex = 7;
+                break;
+            case 2029: periodIndex = 8;
+                break;
+            case 2030: periodIndex = 9;
+                break;
+            case 2031: periodIndex = 10;
+                break;
+            case 2032: periodIndex = 11;
+                break;
+            case 2033: periodIndex = 12;
+                break;
+            case 2034: periodIndex = 13;
+                break;
+            case 2035: periodIndex = 14;
+                break;
+            case 2036: periodIndex = 15;
+                break;
+            case 2037: periodIndex = 16;
+                break;
+        }
+    }
+
+    public double getNpvForRevRes(int year, double mean, double standDev) {
+        definePeriod(year);
+        double revRes = getNormDist(mean,standDev);
+        double costRes = sc.getStorage().getCostRes()[periodIndex];
+        double sevCost = sc.getStorage().getSevCost()[periodIndex];
+        double dep = sc.getStorage().getDep()[periodIndex];
+        double commCost = sc.getStorage().getCommCost()[periodIndex];
+        double intPays = sc.getStorage().getIntPays()[periodIndex];
+        double revTaxPays = sc.getStorage().getRevTaxPays()[periodIndex];
+        double capex = sc.getStorage().getCapex()[periodIndex];
+        double discRate = sc.getStorage().getDiscRate();
+        double repPeriod = sc.getStorage().getRepPeriod();
+
+        double monFlow = revRes - costRes - sevCost - dep - commCost - intPays - revTaxPays - capex;
+        double discMonFlowForYear = monFlow/Math.pow((1 + discRate),(year - repPeriod));
+        double[] array = sc.getStorage().getDiscMonFlow();
+        array[periodIndex] = discMonFlowForYear;
+        double sum = 0;
+        for (double d : array) {
+            sum = sum + d;
+        }
+        return sum;
+    }
+
+    public double[][] calcNpvForRevRes(int year, double mean, double standDev, int testsNum) {
+        double[][] array = new double[testsNum][2];
         for (int i = 0; i < testsNum; i++) {
-            array[i] = getNpvForRevRes(mean, standDev, year);
+            array[i][0] = Math.round(getNpvForRevRes(year, mean, standDev));
+            array[i][1] = getRiskProbLev();
         }
-        Arrays.sort(array);
+        return array;
+    }
+
+    public double getIrrForRevRes(int year, double mean, double standDev) {
+        definePeriod(year);
+        double revRes = getNormDist(mean,standDev);
+        double costRes = sc.getStorage().getCostRes()[periodIndex];
+        double sevCost = sc.getStorage().getSevCost()[periodIndex];
+        double dep = sc.getStorage().getDep()[periodIndex];
+        double commCost = sc.getStorage().getCommCost()[periodIndex];
+        double intPays = sc.getStorage().getIntPays()[periodIndex];
+        double revTaxPays = sc.getStorage().getRevTaxPays()[periodIndex];
+        double capex = sc.getStorage().getCapex()[periodIndex];
+
+        double monFlow = revRes - costRes - sevCost - dep - commCost - intPays - revTaxPays - capex;
+        double[] array = sc.getStorage().getMonFlow();
+        array[periodIndex] = monFlow;
+        return Irr.irr(array);
+    }
+
+    public double[][] calcIrrForRevRes(int year, double mean, double standDev, int testsNum) {
+        double[][] array = new double[testsNum][2];
+        for (int i = 0; i < testsNum; i++) {
+            array[i][0] = getIrrForRevRes(year, mean, standDev);
+            array[i][1] = getRiskProbLev();
+        }
+        return array;
+    }
+
+    public double getPiForRevRes(int year, double mean, double standDev) {
+        definePeriod(year);
+        double revRes = getNormDist(mean,standDev);
+        double costRes = sc.getStorage().getCostRes()[periodIndex];
+        double sevCost = sc.getStorage().getSevCost()[periodIndex];
+        double dep = sc.getStorage().getDep()[periodIndex];
+        double commCost = sc.getStorage().getCommCost()[periodIndex];
+        double intPays = sc.getStorage().getIntPays()[periodIndex];
+        double revTaxPays = sc.getStorage().getRevTaxPays()[periodIndex];
+        double capex = sc.getStorage().getCapex()[periodIndex];
+        double discRate = sc.getStorage().getDiscRate();
+        double repPeriod = sc.getStorage().getRepPeriod();
+
+        double monFlow = revRes - costRes - sevCost - dep - commCost - intPays - revTaxPays - capex;
+        double discMonFlowForYear = monFlow/Math.pow((1 + discRate),(year - repPeriod));
+        double[] array = sc.getStorage().getDiscMonFlow();
+        array[periodIndex] = discMonFlowForYear;
+        double sum1 = 0;
+        double sum2;
+        for (int i = 2; i < sc.getStorage().getPeriod() - 1; i++) {
+            sum1 = sum1 + array[i];
+        }
+        sum2 = array[0] + array[1];
+        return sum1/(-1 * sum2);
+    }
+
+    public double[][] calcPiForRevRes(int year, double mean, double standDev, int testsNum) {
+        double[][] array = new double[testsNum][2];
+        for (int i = 0; i < testsNum; i++) {
+            array[i][0] = getPiForRevRes(year, mean, standDev);
+            array[i][1] = getRiskProbLev();
+        }
+        return array;
+    }
+
+    public double getNpvForCleanRev(int year, double mean, double standDev) {
+        definePeriod(year);
+        double discRate = sc.getStorage().getDiscRate();
+        int repYear = sc.getStorage().getRepPeriod();
+        double cleanRev = getNormDist(mean, standDev);
+        double capex = sc.getStorage().getCapex()[periodIndex];
+        double monFlow = cleanRev - capex;
+        double discMonFlow = monFlow/Math.pow((1 + discRate),(year - repYear));
+        return calcStorageNpv() - sc.getStorage().getDiscMonFlow()[periodIndex] + discMonFlow;
+    }
+
+    public double[][] calcNpvForCleanRev(int year, double mean, double standDev, int testsNum) {
+        double[][] array = new double[testsNum][2];
+        for (int i = 0; i < testsNum; i++) {
+            array[i][0] = Math.round(getNpvForCleanRev(year, mean, standDev));
+            array[i][1] = getRiskProbLev();
+        }
+        return array;
+    }
+
+    public double getIrrForCleanRev(int year, double mean, double standDev) {
+        definePeriod(year);
+        double cleanRev = getNormDist(mean, standDev);
+        double capex = sc.getStorage().getCapex()[periodIndex];
+        double monFlow = cleanRev - capex;
+        double[] array = sc.getStorage().getMonFlow();
+        array[periodIndex] = monFlow;
+        return Irr.irr(array);
+    }
+
+    public double[][] calcIrrForCleanRev(int year, double mean, double standDev, int testsNum) {
+        double[][] array = new double[testsNum][2];
+        for (int i = 0; i < testsNum; i++) {
+            array[i][0] = getIrrForCleanRev(year, mean, standDev);
+            array[i][1] = getRiskProbLev();
+        }
+        return array;
+    }
+
+    public double getPiForCleanRev(int year, double mean, double standDev) {
+        definePeriod(year);
+        double discRate = sc.getStorage().getDiscRate();
+        int repYear = sc.getStorage().getRepPeriod();
+        double cleanRev = getNormDist(mean, standDev);
+        double capex = sc.getStorage().getCapex()[periodIndex];
+        double monFlow = cleanRev - capex;
+        double discMonFlow = monFlow/Math.pow((1 + discRate),(year - repYear));
+        double[] array = sc.getStorage().getDiscMonFlow();
+        array[periodIndex] = discMonFlow;
+        double sum1 = 0;
+        double sum2;
+        for (int i = 2; i < sc.getStorage().getPeriod() - 1; i++) {
+            sum1 = sum1 + array[i];
+        }
+        sum2 = array[0] + array[1];
+        return sum1/(-1 * sum2);
+    }
+
+    public double[][] calcPiForCleanRev(int year, double mean, double standDev, int testsNum) {
+        double[][] array = new double[testsNum][2];
+        for (int i = 0; i < testsNum; i++) {
+            array[i][0] = getPiForCleanRev(year, mean, standDev);
+            array[i][1] = getRiskProbLev();
+        }
+        return array;
+    }
+
+    public double getNpvForCostRes(int year, double mean, double standDev) {
+        definePeriod(year);
+        double revRes = sc.getStorage().getRevRes()[periodIndex];
+        double costRes = getNormDist(mean,standDev);
+        double sevCost = sc.getStorage().getSevCost()[periodIndex];
+        double dep = sc.getStorage().getDep()[periodIndex];
+        double commCost = sc.getStorage().getCommCost()[periodIndex];
+        double intPays = sc.getStorage().getIntPays()[periodIndex];
+        double revTaxPays = sc.getStorage().getRevTaxPays()[periodIndex];
+        double capex = sc.getStorage().getCapex()[periodIndex];
+        double discRate = sc.getStorage().getDiscRate();
+        double repPeriod = sc.getStorage().getRepPeriod();
+
+        double monFlow = revRes - costRes - sevCost - dep - commCost - intPays - revTaxPays - capex;
+        double discMonFlowForYear = monFlow/Math.pow((1 + discRate),(year - repPeriod));
+        double[] array = sc.getStorage().getDiscMonFlow();
+        array[periodIndex] = discMonFlowForYear;
+        double sum = 0;
+        for (double d : array) {
+            sum = sum + d;
+        }
+        return sum;
+    }
+
+    public double[][] calcNpvForCostRes(int year, double mean, double standDev, int testsNum) {
+        double[][] array = new double[testsNum][2];
+        for (int i = 0; i < testsNum; i++) {
+            array[i][0] = Math.round(getNpvForCostRes(year, mean, standDev));
+            array[i][1] = getRiskProbLev();
+        }
+        return array;
+    }
+
+    public double getIrrForCostRes(int year, double mean, double standDev) {
+        definePeriod(year);
+        double revRes = sc.getStorage().getRevRes()[periodIndex];
+        double costRes = getNormDist(mean,standDev);
+        double sevCost = sc.getStorage().getSevCost()[periodIndex];
+        double dep = sc.getStorage().getDep()[periodIndex];
+        double commCost = sc.getStorage().getCommCost()[periodIndex];
+        double intPays = sc.getStorage().getIntPays()[periodIndex];
+        double revTaxPays = sc.getStorage().getRevTaxPays()[periodIndex];
+        double capex = sc.getStorage().getCapex()[periodIndex];
+
+        double monFlow = revRes - costRes - sevCost - dep - commCost - intPays - revTaxPays - capex;
+        double[] array = sc.getStorage().getMonFlow();
+        array[periodIndex] = monFlow;
+        return Irr.irr(array);
+    }
+
+    public double[][] calcIrrForCostRes(int year, double mean, double standDev, int testsNum) {
+        double[][] array = new double[testsNum][2];
+        for (int i = 0; i < testsNum; i++) {
+            array[i][0] = getIrrForCostRes(year, mean, standDev);
+            array[i][1] = getRiskProbLev();
+        }
+        return array;
+    }
+
+    public double getPiForCostRes(int year, double mean, double standDev) {
+        definePeriod(year);
+        double revRes = sc.getStorage().getRevRes()[periodIndex];
+        double costRes = getNormDist(mean,standDev);
+        double sevCost = sc.getStorage().getSevCost()[periodIndex];
+        double dep = sc.getStorage().getDep()[periodIndex];
+        double commCost = sc.getStorage().getCommCost()[periodIndex];
+        double intPays = sc.getStorage().getIntPays()[periodIndex];
+        double revTaxPays = sc.getStorage().getRevTaxPays()[periodIndex];
+        double capex = sc.getStorage().getCapex()[periodIndex];
+        double discRate = sc.getStorage().getDiscRate();
+        double repPeriod = sc.getStorage().getRepPeriod();
+
+        double monFlow = revRes - costRes - sevCost - dep - commCost - intPays - revTaxPays - capex;
+        double discMonFlowForYear = monFlow/Math.pow((1 + discRate),(year - repPeriod));
+        double[] array = sc.getStorage().getDiscMonFlow();
+        array[periodIndex] = discMonFlowForYear;
+        double sum1 = 0;
+        double sum2;
+        for (int i = 2; i < sc.getStorage().getPeriod() - 1; i++) {
+            sum1 = sum1 + array[i];
+        }
+        sum2 = array[0] + array[1];
+        return sum1/(-1 * sum2);
+    }
+
+    public double[][] calcPiForCostRes(int year, double mean, double standDev, int testsNum) {
+        double[][] array = new double[testsNum][2];
+        for (int i = 0; i < testsNum; i++) {
+            array[i][0] = getPiForCostRes(year, mean, standDev);
+            array[i][1] = getRiskProbLev();
+        }
+        return array;
+    }
+
+    public double getNpvForOpRev(int year, double mean, double standDev) {
+        definePeriod(year);
+        double discRate = sc.getStorage().getDiscRate();
+        int repPeriod = sc.getStorage().getRepPeriod();
+        double opRev = getNormDist(mean, standDev);
+        double intPays = sc.getStorage().getIntPays()[periodIndex];
+        double revTaxPays = sc.getStorage().getRevTaxPays()[periodIndex];
+        double capex = sc.getStorage().getCapex()[periodIndex];
+
+        double monFlow = opRev - intPays - revTaxPays - capex;
+        double discMonFlowForYear = monFlow/Math.pow((1 + discRate),(year - repPeriod));
+        double[] array = sc.getStorage().getDiscMonFlow();
+        array[periodIndex] = discMonFlowForYear;
+        double sum = 0;
+        for (double d : array) {
+            sum = sum + d;
+        }
+        return sum;
+    }
+
+    public double[][] calcNpvForOpRev(int year, double mean, double standDev, int testsNum) {
+        double[][] array = new double[testsNum][2];
+        for (int i = 0; i < testsNum; i++) {
+            array[i][0] = getNpvForOpRev(year, mean, standDev);
+            array[i][1] = getRiskProbLev();
+        }
+        return array;
+    }
+
+    public double getIrrForOpRev(int year, double mean, double standDev) {
+        definePeriod(year);
+        double opRev = getNormDist(mean, standDev);
+        double intPays = sc.getStorage().getIntPays()[periodIndex];
+        double revTaxPays = sc.getStorage().getRevTaxPays()[periodIndex];
+        double capex = sc.getStorage().getCapex()[periodIndex];
+
+        double monFlow = opRev - intPays - revTaxPays - capex;
+        double[] array = sc.getStorage().getMonFlow();
+        array[periodIndex] = monFlow;
+        return Irr.irr(array);
+    }
+
+    public double[][] calcIrrForOpRev(int year, double mean, double standDev, int testsNum) {
+        double[][] array = new double[testsNum][2];
+        for (int i = 0; i < testsNum; i++) {
+            array[i][0] = getIrrForOpRev(year, mean, standDev);
+            array[i][1] = getRiskProbLev();
+        }
+        return array;
+    }
+
+    public double getPiForOpRev(int year, double mean, double standDev) {
+        definePeriod(year);
+        double discRate = sc.getStorage().getDiscRate();
+        int repPeriod = sc.getStorage().getRepPeriod();
+        double opRev = getNormDist(mean, standDev);
+        double intPays = sc.getStorage().getIntPays()[periodIndex];
+        double revTaxPays = sc.getStorage().getRevTaxPays()[periodIndex];
+        double capex = sc.getStorage().getCapex()[periodIndex];
+
+        double monFlow = opRev - intPays - revTaxPays - capex;
+        double discMonFlowForYear = monFlow/Math.pow((1 + discRate),(year - repPeriod));
+        double[] array = sc.getStorage().getDiscMonFlow();
+        array[periodIndex] = discMonFlowForYear;
+        double sum1 = 0;
+        double sum2;
+        for (int i = 2; i < sc.getStorage().getPeriod() - 1; i++) {
+            sum1 = sum1 + array[i];
+        }
+        sum2 = array[0] + array[1];
+        return sum1/(-1 * sum2);
+    }
+
+    public double[][] calcPiForOpRev(int year, double mean, double standDev, int testsNum) {
+        double[][] array = new double[testsNum][2];
+        for (int i = 0; i < testsNum; i++) {
+            array[i][0] = getPiForOpRev(year, mean, standDev);
+            array[i][1] = getRiskProbLev();
+        }
+        return array;
+    }
+
+    public double getNpvForRevBefTax(int year, double mean, double standDev) {
+        definePeriod(year);
+        double discRate = sc.getStorage().getDiscRate();
+        int repYear = sc.getStorage().getRepPeriod();
+        double revBefTax = getNormDist(mean, standDev);
+        double revTaxPays = sc.getStorage().getRevTaxPays()[periodIndex];
+        double capex = sc.getStorage().getCapex()[periodIndex];
+
+        double monFlow = revBefTax - revTaxPays - capex;
+        double discMonFlow = monFlow/Math.pow((1 + discRate),(year - repYear));
+        return calcStorageNpv() - sc.getStorage().getDiscMonFlow()[periodIndex] + discMonFlow;
+    }
+
+    public double[][] calcNpvForRevBefTax(int year, double mean, double standDev, int testsNum) {
+        double[][] array = new double[testsNum][2];
+        for (int i = 0; i < testsNum; i++) {
+            array[i][0] = getNpvForRevBefTax(year, mean, standDev);
+            array[i][1] = getRiskProbLev();
+        }
+        return array;
+    }
+
+    public double getIrrForRevBefTax(int year, double mean, double standDev) {
+        definePeriod(year);
+        double revBefTax = getNormDist(mean, standDev);
+        double revTaxPays = sc.getStorage().getRevTaxPays()[periodIndex];
+        double capex = sc.getStorage().getCapex()[periodIndex];
+
+        double monFlow = revBefTax - revTaxPays - capex;
+        double[] array = sc.getStorage().getMonFlow();
+        array[periodIndex] = monFlow;
+        return Irr.irr(array);
+    }
+
+    public double[][] calcIrrForRevBefTax(int year, double mean, double standDev, int testsNum) {
+        double[][] array = new double[testsNum][2];
+        for (int i = 0; i < testsNum; i++) {
+            array[i][0] = getIrrForRevBefTax(year, mean, standDev);
+            array[i][1] = getRiskProbLev();
+        }
+        return array;
+    }
+
+    public double getPiForRevBefTax(int year, double mean, double standDev) {
+        definePeriod(year);
+        double discRate = sc.getStorage().getDiscRate();
+        int repYear = sc.getStorage().getRepPeriod();
+        double revBefTax = getNormDist(mean, standDev);
+        double revTaxPays = sc.getStorage().getRevTaxPays()[periodIndex];
+        double capex = sc.getStorage().getCapex()[periodIndex];
+
+        double monFlow = revBefTax - revTaxPays - capex;
+        double discMonFlowForYear = monFlow/Math.pow((1 + discRate),(year - repYear));
+        double[] array = sc.getStorage().getDiscMonFlow();
+        array[periodIndex] = discMonFlowForYear;
+        double sum1 = 0;
+        double sum2;
+        for (int i = 2; i < sc.getStorage().getPeriod() - 1; i++) {
+            sum1 = sum1 + array[i];
+        }
+        sum2 = array[0] + array[1];
+        return sum1/(-1 * sum2);
+    }
+
+    public double[][] calcPiForRevBefTax(int year, double mean, double standDev, int testsNum) {
+        double[][] array = new double[testsNum][2];
+        for (int i = 0; i < testsNum; i++) {
+            array[i][0] = getPiForRevBefTax(year, mean, standDev);
+            array[i][1] = getRiskProbLev();
+        }
         return array;
     }
 }

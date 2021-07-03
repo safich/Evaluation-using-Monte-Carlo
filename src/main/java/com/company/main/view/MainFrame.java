@@ -3,7 +3,6 @@ package com.company.main.view;
 import com.company.main.control.Calculator;
 import com.company.main.control.StorageController;
 import com.company.main.model.DocReader;
-import com.company.main.model.Storage;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,12 +11,10 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 
 public class MainFrame extends JFrame{
-    private StorageController sc;
-    private DocReader docReader;
-    private JFileChooser fileChooser;
+    private final StorageController sc;
+    private final JFileChooser fileChooser;
     private Calculator calculator;
-    private JList list;
-    private DefaultListModel listModel;
+    private final DefaultListModel listModel;
     private boolean isCalculable;
 
     public MainFrame(StorageController sc) {
@@ -34,7 +31,7 @@ public class MainFrame extends JFrame{
 
         listModel = new DefaultListModel();
         listModel.addElement("Ожидание ввода...");
-        list = new JList(listModel);
+        JList list = new JList(listModel);
         JScrollPane listScrollPane = new JScrollPane(list);
 
         JPanel buttonPane = new JPanel();
@@ -90,7 +87,7 @@ public class MainFrame extends JFrame{
         fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
         int res = fileChooser.showOpenDialog(MainFrame.this);
         if(res == JFileChooser.APPROVE_OPTION) {
-            docReader = new DocReader(sc.getStorage());
+            DocReader docReader = new DocReader(sc);
             try {
                 docReader.readData(fileChooser.getSelectedFile());
             } catch (IOException ex) {
@@ -100,10 +97,10 @@ public class MainFrame extends JFrame{
             calculator = new Calculator(sc);
 
             listModel.removeAllElements();
-            listModel.addElement("NPV = " + calculator.getNpv());
-            listModel.addElement("IRR = " + calculator.getIrr());
-            listModel.addElement("PI = " + calculator.getPi());
-            listModel.addElement("Ставка дисконтироваия = 12%");
+            listModel.addElement("NPV = " + Math.round(calculator.calcStorageNpv()));
+            listModel.addElement("IRR = " + calculator.calcStorageIrr());
+            listModel.addElement("PI = " + calculator.calcStoragePi());
+            listModel.addElement("Ставка дисконтироваия = " + sc.getStorage().getDiscRate());
 
             revalidate();
             repaint();

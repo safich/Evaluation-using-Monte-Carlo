@@ -1,26 +1,34 @@
 package com.company.main.view;
 
 import com.company.main.control.Calculator;
+import com.company.main.model.DocWriter;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.io.IOException;
 
 public class CalcDialog extends JDialog {
-    private Calculator calculator;
+    private final Calculator calculator;
+    private String selectedPar;
+    private int year;
+    private double mean;
+    private double standDev;
+    private int testsNum;
 
     public CalcDialog(Calculator calculator) {
         setModal(true);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         this.calculator = calculator;
+        mean = 0;
+        standDev = 0;
+        testsNum = 0;
         setTitle("Расчетные факторы");
 
         String[] params = {
                 "Выручка Итого",
                 "Себестоимость Итого",
-                "Амортизация",
                 "Операционная прибыль",
+                "Прибыль до налогообложения",
                 "Чистая прибыль"
         };
 
@@ -44,69 +52,232 @@ public class CalcDialog extends JDialog {
                 "2037"
         };
 
+        //Выбор параметра и года
+        JPanel selectionPane = new JPanel();
+
         JComboBox paramsComboBox = new JComboBox(params);
         JComboBox yearsComboBox = new JComboBox(years);
 
-        JLabel testsNum = new JLabel("Кол-во испытаний:");
-        JTextField testsNumField = new JTextField("10000");
-        testsNumField.setColumns(10);
-
-        JPanel selectionPane = new JPanel();
         selectionPane.add(paramsComboBox);
         selectionPane.add(yearsComboBox);
 
-        JPanel numbersPane = new JPanel();
-        numbersPane.setLayout(new BoxLayout(numbersPane, BoxLayout.Y_AXIS));
-        numbersPane.add(testsNum);
-        numbersPane.add(testsNumField);
+        //Панель с вводом
+        JPanel inputPane = new JPanel();
+        inputPane.setLayout(new BoxLayout(inputPane, BoxLayout.Y_AXIS));
 
-        JPanel deviationPane = new JPanel();
-        JLabel mean = new JLabel("Среднее:");
+        JLabel testsNumLabel = new JLabel("Кол-во испытаний:");
+        JLabel meanLabel = new JLabel("Среднее:");
+        JLabel standDevLabel = new JLabel("Отклонение:");
+
+        JTextField testsNumField = new JTextField("10000");
+        testsNumField.setColumns(5);
+        testsNumField.setDragEnabled(false);
         JTextField meanField = new JTextField();
-        meanField.setColumns(8);
+        meanField.setColumns(7);
         JTextField standDevField = new JTextField();
-        standDevField.setColumns(5);
-        JLabel standDev = new JLabel("Отклонение:");
-        deviationPane.add(mean);
-        deviationPane.add(meanField);
-        deviationPane.add(standDev);
-        deviationPane.add(standDevField);
+        standDevField.setColumns(7);
 
-        numbersPane.add(deviationPane);
+        inputPane.add(testsNumLabel);
+        inputPane.add(testsNumField);
+        inputPane.add(meanLabel);
+        inputPane.add(meanField);
+        inputPane.add(standDevLabel);
+        inputPane.add(standDevField);
+
+        //Кнопки для выбора итогового показателя
+        JPanel radioButtonsPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        JRadioButton npvButton = new JRadioButton("NPV");
+        JRadioButton irrButton = new JRadioButton("IRR");
+        JRadioButton piButton = new JRadioButton("PI");
+        ButtonGroup group = new ButtonGroup();
+        group.add(npvButton);
+        group.add(irrButton);
+        group.add(piButton);
+        radioButtonsPanel.add(npvButton);
+        radioButtonsPanel.add(irrButton);
+        radioButtonsPanel.add(piButton);
+
+        inputPane.add(radioButtonsPanel);
 
         JButton selectButton = new JButton("OK");
-        selectButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                calcSelected(String.valueOf(paramsComboBox.getSelectedItem()), Integer.parseInt(String.valueOf(yearsComboBox.getSelectedItem())),
-                        Double.parseDouble(meanField.getText()), Double.parseDouble(standDevField.getText()), Integer.parseInt(testsNumField.getText()));
-                dispose();
+
+        //Вычисление выбранных параметров
+        selectButton.addActionListener(e -> {
+            selectedPar = String.valueOf(paramsComboBox.getSelectedItem());
+            year = Integer.parseInt(String.valueOf(yearsComboBox.getSelectedItem()));
+            mean = Double.parseDouble(meanField.getText());
+            standDev = Double.parseDouble(standDevField.getText());
+            testsNum = Integer.parseInt(testsNumField.getText());
+
+            if (npvButton.isSelected()) {
+                calcNpv(selectedPar, year, mean, standDev, testsNum);
+            }
+            else if (irrButton.isSelected()) {
+                calcIrr(selectedPar, year, mean, standDev, testsNum);
+            }
+            else if (piButton.isSelected()) {
+                calcPi(selectedPar, year, mean, standDev, testsNum);
+            } else {
+                JOptionPane.showMessageDialog(this,"Выберите показатель", "Предупреждение", JOptionPane.ERROR_MESSAGE);
             }
         });
 
         JPanel buttonPane = new JPanel();
         buttonPane.add(selectButton);
 
+
+        JPanel mainPane = new JPanel();
+        mainPane.add(inputPane, BorderLayout.CENTER);
+
         add(selectionPane, BorderLayout.NORTH);
-        add(numbersPane,BorderLayout.CENTER);
+        add(mainPane, BorderLayout.CENTER);
         add(buttonPane, BorderLayout.PAGE_END);
         pack();
         setLocationRelativeTo(null);
         setVisible(true);
     }
 
-    private void calcSelected(String par, int year, double mean, double standDev, int testsNum) {
-        double[] array = calculator.calcNpvForRevRes(mean, standDev, testsNum, year);
-        DefaultListModel listModel = new DefaultListModel();
-        for (int i = 0; i < array.length; i++) {
-            listModel.addElement(array[i]);
+    private void calcNpv(String par, int year, double mean, double standDev, int testsNum) {
+        if (par.equals("Выручка Итого")) {
+            DocWriter docWriter = new DocWriter();
+            try {
+                docWriter.writeData(calculator.calcNpvForRevRes(year, mean, standDev, testsNum));
+                JOptionPane.showMessageDialog(this, "Результаты записаны в файл Monte-Carlo.xlsx", "Успех",JOptionPane.INFORMATION_MESSAGE);
+            } catch (IOException exception) {
+                JOptionPane.showMessageDialog(this, exception.getMessage(), "Ошибка создания файла", JOptionPane.ERROR_MESSAGE);
+            }
         }
-        JList list = new JList(listModel);
-        JScrollPane listScrollPane = new JScrollPane(list);
-        JDialog dialog = new JDialog();
-        dialog.add(listScrollPane);
-        dialog.pack();
-        dialog.setLocationRelativeTo(null);
-        dialog.setVisible(true);
+        if (par.equals("Себестоимость Итого")) {
+            DocWriter docWriter = new DocWriter();
+            try {
+                docWriter.writeData(calculator.calcNpvForCostRes(year, mean, standDev, testsNum));
+                JOptionPane.showMessageDialog(this, "Результаты записаны в файл Monte-Carlo.xlsx", "Успех",JOptionPane.INFORMATION_MESSAGE);
+            } catch (IOException exception) {
+                JOptionPane.showMessageDialog(this, exception.getMessage(), "Ошибка создания файла", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+        if (par.equals("Операционная прибыль")) {
+            DocWriter docWriter = new DocWriter();
+            try {
+                docWriter.writeData(calculator.calcNpvForOpRev(year, mean, standDev, testsNum));
+                JOptionPane.showMessageDialog(this, "Результаты записаны в файл Monte-Carlo.xlsx", "Успех",JOptionPane.INFORMATION_MESSAGE);
+            } catch (IOException exception) {
+                JOptionPane.showMessageDialog(this, exception.getMessage(), "Ошибка создания файла", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+        if (par.equals("Прибыль до налогообложения")) {
+            DocWriter docWriter = new DocWriter();
+            try {
+                docWriter.writeData(calculator.calcNpvForRevBefTax(year, mean, standDev, testsNum));
+                JOptionPane.showMessageDialog(this, "Результаты записаны в файл Monte-Carlo.xlsx", "Успех",JOptionPane.INFORMATION_MESSAGE);
+            } catch (IOException exception) {
+                JOptionPane.showMessageDialog(this, exception.getMessage(), "Ошибка создания файла", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+        if(par.equals("Чистая прибыль")) {
+            DocWriter docWriter = new DocWriter();
+            try {
+                docWriter.writeData(calculator.calcNpvForCleanRev(year, mean, standDev, testsNum));
+                JOptionPane.showMessageDialog(this, "Результаты записаны в файл Monte-Carlo.xlsx", "Успех",JOptionPane.INFORMATION_MESSAGE);
+            } catch (IOException exception) {
+                JOptionPane.showMessageDialog(this, exception.getMessage(), "Ошибка создания файла", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }
+
+    private void calcIrr(String par, int year, double mean, double standDev, int testsNum) {
+        if (par.equals("Выручка Итого")) {
+            DocWriter docWriter = new DocWriter();
+            try {
+                docWriter.writeData(calculator.calcIrrForRevRes(year, mean, standDev, testsNum));
+                JOptionPane.showMessageDialog(this, "Результаты записаны в файл Monte-Carlo.xlsx", "Успех",JOptionPane.INFORMATION_MESSAGE);
+            } catch (IOException exception) {
+                JOptionPane.showMessageDialog(this, exception.getMessage(), "Ошибка создания файла", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+        if (par.equals("Себестоимость Итого")) {
+            DocWriter docWriter = new DocWriter();
+            try {
+                docWriter.writeData(calculator.calcIrrForCostRes(year, mean, standDev, testsNum));
+                JOptionPane.showMessageDialog(this, "Результаты записаны в файл Monte-Carlo.xlsx", "Успех",JOptionPane.INFORMATION_MESSAGE);
+            } catch (IOException exception) {
+                JOptionPane.showMessageDialog(this, exception.getMessage(), "Ошибка создания файла", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+        if (par.equals("Операционная прибыль")) {
+            DocWriter docWriter = new DocWriter();
+            try {
+                docWriter.writeData(calculator.calcIrrForOpRev(year, mean, standDev, testsNum));
+                JOptionPane.showMessageDialog(this, "Результаты записаны в файл Monte-Carlo.xlsx", "Успех",JOptionPane.INFORMATION_MESSAGE);
+            } catch (IOException exception) {
+                JOptionPane.showMessageDialog(this, exception.getMessage(), "Ошибка создания файла", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+        if (par.equals("Прибыль до налогообложения")) {
+            DocWriter docWriter = new DocWriter();
+            try {
+                docWriter.writeData(calculator.calcIrrForRevBefTax(year, mean, standDev, testsNum));
+                JOptionPane.showMessageDialog(this, "Результаты записаны в файл Monte-Carlo.xlsx", "Успех",JOptionPane.INFORMATION_MESSAGE);
+            } catch (IOException exception) {
+                JOptionPane.showMessageDialog(this, exception.getMessage(), "Ошибка создания файла", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+        if(par.equals("Чистая прибыль")) {
+            DocWriter docWriter = new DocWriter();
+            try {
+                docWriter.writeData(calculator.calcIrrForCleanRev(year, mean, standDev, testsNum));
+                JOptionPane.showMessageDialog(this, "Результаты записаны в файл Monte-Carlo.xlsx", "Успех",JOptionPane.INFORMATION_MESSAGE);
+            } catch (IOException exception) {
+                JOptionPane.showMessageDialog(this, exception.getMessage(), "Ошибка создания файла", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }
+
+    private void calcPi(String par, int year, double mean, double standDev, int testsNum) {
+        if (par.equals("Выручка Итого")) {
+            DocWriter docWriter = new DocWriter();
+            try {
+                docWriter.writeData(calculator.calcPiForRevRes(year, mean, standDev, testsNum));
+                JOptionPane.showMessageDialog(this, "Результаты записаны в файл Monte-Carlo.xlsx", "Успех",JOptionPane.INFORMATION_MESSAGE);
+            } catch (IOException exception) {
+                JOptionPane.showMessageDialog(this, exception.getMessage(), "Ошибка создания файла", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+        if (par.equals("Себестоимость Итого")) {
+            DocWriter docWriter = new DocWriter();
+            try {
+                docWriter.writeData(calculator.calcPiForCostRes(year, mean, standDev, testsNum));
+                JOptionPane.showMessageDialog(this, "Результаты записаны в файл Monte-Carlo.xlsx", "Успех",JOptionPane.INFORMATION_MESSAGE);
+            } catch (IOException exception) {
+                JOptionPane.showMessageDialog(this, exception.getMessage(), "Ошибка создания файла", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+        if (par.equals("Операционная прибыль")) {
+            DocWriter docWriter = new DocWriter();
+            try {
+                docWriter.writeData(calculator.calcPiForOpRev(year, mean, standDev, testsNum));
+                JOptionPane.showMessageDialog(this, "Результаты записаны в файл Monte-Carlo.xlsx", "Успех",JOptionPane.INFORMATION_MESSAGE);
+            } catch (IOException exception) {
+                JOptionPane.showMessageDialog(this, exception.getMessage(), "Ошибка создания файла", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+        if (par.equals("Прибыль до налогообложения")) {
+            DocWriter docWriter = new DocWriter();
+            try {
+                docWriter.writeData(calculator.calcPiForRevBefTax(year, mean, standDev, testsNum));
+                JOptionPane.showMessageDialog(this, "Результаты записаны в файл Monte-Carlo.xlsx", "Успех",JOptionPane.INFORMATION_MESSAGE);
+            } catch (IOException exception) {
+                JOptionPane.showMessageDialog(this, exception.getMessage(), "Ошибка создания файла", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+        if(par.equals("Чистая прибыль")) {
+            DocWriter docWriter = new DocWriter();
+            try {
+                docWriter.writeData(calculator.calcPiForCleanRev(year, mean, standDev, testsNum));
+                JOptionPane.showMessageDialog(this, "Результаты записаны в файл Monte-Carlo.xlsx", "Успех",JOptionPane.INFORMATION_MESSAGE);
+            } catch (IOException exception) {
+                JOptionPane.showMessageDialog(this, exception.getMessage(), "Ошибка создания файла", JOptionPane.ERROR_MESSAGE);
+            }
+        }
     }
 }

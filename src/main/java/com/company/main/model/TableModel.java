@@ -5,8 +5,8 @@ import com.company.main.control.StorageController;
 import javax.swing.table.AbstractTableModel;
 
 public class TableModel extends AbstractTableModel {
-    private StorageController sc;
-    private int rowsNum;
+    private final StorageController sc;
+    private final int rowsNum;
 
     public TableModel(StorageController sc) {
         this.sc = sc;

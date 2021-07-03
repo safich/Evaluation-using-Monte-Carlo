@@ -23,9 +23,6 @@ public class Storage {
     private double discRate;
     private double sevTax;
     private double revTax;
-    private double npv;
-    private double irr;
-    private double pi;
 
     private int period = 17;
     private static final int REPPERIOD = 2022;
@@ -128,14 +125,6 @@ public class Storage {
 
     public double[] getDiscMonFlow() {
         return discMonFlow;
-    }
-
-    public double getNpv() {
-        return npv;
-    }
-
-    public double getIrr() {
-        return irr;
     }
 
     public double getDiscRate() {
