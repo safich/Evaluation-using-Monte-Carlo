@@ -46,42 +46,7 @@ public class Calculator {
     }
 
     private void definePeriod(int year) {
-        switch(year) {
-            case 2021: periodIndex = 0;
-                break;
-            case 2022: periodIndex = 1;
-                break;
-            case 2023: periodIndex = 2;
-                break;
-            case 2024: periodIndex = 3;
-                break;
-            case 2025: periodIndex = 4;
-                break;
-            case 2026: periodIndex = 5;
-                break;
-            case 2027: periodIndex = 6;
-                break;
-            case 2028: periodIndex = 7;
-                break;
-            case 2029: periodIndex = 8;
-                break;
-            case 2030: periodIndex = 9;
-                break;
-            case 2031: periodIndex = 10;
-                break;
-            case 2032: periodIndex = 11;
-                break;
-            case 2033: periodIndex = 12;
-                break;
-            case 2034: periodIndex = 13;
-                break;
-            case 2035: periodIndex = 14;
-                break;
-            case 2036: periodIndex = 15;
-                break;
-            case 2037: periodIndex = 16;
-                break;
-        }
+        periodIndex = year - sc.getStorage().getStartPeriod();
     }
 
     public double getNpvForRevRes(int year, double mean, double standDev) {
