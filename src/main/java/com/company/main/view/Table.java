@@ -7,7 +7,6 @@ import javax.swing.*;
 import javax.swing.table.TableColumn;
 import java.awt.*;
 
-
 public class Table extends JFrame {
     public Table(StorageController sc) {
         super("Полученные данные");
@@ -26,9 +25,10 @@ public class Table extends JFrame {
         }
         JScrollPane jScrollPane = new JScrollPane(table);
         add(jScrollPane, BorderLayout.CENTER);
-        setPreferredSize(new Dimension(1500,500));
+        setPreferredSize(new Dimension(1500,300));
         pack();
-        setLocationRelativeTo(null);
+
+        setLocation(200,300);
         setVisible(true);
     }
 }

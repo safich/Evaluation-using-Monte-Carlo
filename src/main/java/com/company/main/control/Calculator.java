@@ -45,7 +45,7 @@ public class Calculator {
         return riskProbLev;
     }
 
-    private void definePeriod(int year) {
+    public void definePeriod(int year) {
         periodIndex = year - sc.getStorage().getStartPeriod();
     }
 
