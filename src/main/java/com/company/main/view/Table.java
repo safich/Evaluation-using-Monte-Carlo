@@ -1,6 +1,6 @@
 package com.company.main.view;
 
-import com.company.main.control.StorageController;
+import com.company.main.model.MainStorage;
 import com.company.main.model.TableModel;
 
 import javax.swing.*;
@@ -8,13 +8,13 @@ import javax.swing.table.TableColumn;
 import java.awt.*;
 
 public class Table extends JFrame {
-    public Table(StorageController sc) {
+    public Table(MainStorage storage) {
         super("Полученные данные");
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 
-        JTable table = new JTable(new TableModel(sc));
+        JTable table = new JTable(new TableModel(storage));
         TableColumn columnSize;
-        for (int i = 0; i < sc.getStorage().getPeriod(); i++) {
+        for (int i = 0; i < storage.getRepPeriod(); i++) {
             columnSize = table.getColumnModel().getColumn(i);
             if (i == 0) {
                 columnSize.setMaxWidth(200);

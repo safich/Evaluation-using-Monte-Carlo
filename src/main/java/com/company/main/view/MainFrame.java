@@ -1,8 +1,9 @@
 package com.company.main.view;
 
+
 import com.company.main.control.Calculator;
-import com.company.main.control.StorageController;
 import com.company.main.model.DocReader;
+import com.company.main.model.MainStorage;
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,17 +12,17 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 
 public class MainFrame extends JFrame{
-    private final StorageController sc;
+    private final MainStorage storage;
     private final JFileChooser fileChooser;
     private Calculator calculator;
     private final DefaultListModel listModel;
     private boolean isCalculable;
 
-    public MainFrame(StorageController sc) {
+    public MainFrame(MainStorage storage) {
         super("Расчет Монте-Карло");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        this.sc = sc;
+        this.storage = storage;
         isCalculable = false;
 
         JMenuBar menuBar = new JMenuBar();
@@ -87,20 +88,20 @@ public class MainFrame extends JFrame{
         fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
         int res = fileChooser.showOpenDialog(MainFrame.this);
         if(res == JFileChooser.APPROVE_OPTION) {
-            DocReader docReader = new DocReader(sc);
+            DocReader docReader = new DocReader(storage);
             try {
                 docReader.readData(fileChooser.getSelectedFile());
             } catch (IOException ex) {
                 JOptionPane.showMessageDialog(MainFrame.this, ex.getMessage());
             }
-            new Table(sc);
-            calculator = new Calculator(sc);
+            new Table(storage);
+            calculator = new Calculator(storage);
 
             listModel.removeAllElements();
             listModel.addElement("NPV = " + Math.round(calculator.calcStorageNpv()));
-            listModel.addElement("IRR = " + calculator.calcStorageIrr());
-            listModel.addElement("PI = " + calculator.calcStoragePi());
-            listModel.addElement("Ставка дисконтироваия = " + sc.getStorage().getDiscRate());
+            listModel.addElement("IRR = " + String.format("%.2f", calculator.calcStorageIrr() * 100) + "%");
+            listModel.addElement("PI = " + String.format("%.2f", calculator.calcStoragePi()));
+            listModel.addElement("Ставка дисконтироваия = " + storage.getDiscRate() * 100 + "%");
 
             revalidate();
             repaint();

@@ -1,6 +1,5 @@
 package com.company.main.model;
 
-import com.company.main.control.StorageController;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -11,10 +10,10 @@ import java.io.FileInputStream;
 import java.io.IOException;
 
 public class DocReader {
-    private final StorageController sc;
+    private final MainStorage storage;
 
-    public DocReader(StorageController sc) {
-        this.sc = sc;
+    public DocReader(MainStorage storage) {
+        this.storage = storage;
     }
 
     public void readData(File file) throws IOException {
@@ -24,106 +23,133 @@ public class DocReader {
 
         XSSFRow row = sheet.getRow(2);
         int c = 2;
-        for (int i = 0; i < sc.getStorage().getPeriod(); i++) {
+        int y = 2021;
+
+        for (int i = 0; i < storage.getRepPeriod(); i++) {
             XSSFCell cell = row.getCell(c);
-            sc.getStorage().getCapex()[i] = cell.getNumericCellValue();
+            storage.setCapex(y, cell.getNumericCellValue());
             c++;
+            y++;
         }
 
         row = sheet.getRow(4);
         c = 2;
-        for (int i = 0; i < sc.getStorage().getPeriod(); i++) {
+        y = 2021;
+        for (int i = 0; i < storage.getRepPeriod(); i++) {
             XSSFCell cell = row.getCell(c);
-            sc.getStorage().getRevRes()[i] = cell.getNumericCellValue();
+            storage.setRevRes(y, cell.getNumericCellValue());
             c++;
+            y++;
         }
 
         row = sheet.getRow(9);
         c = 2;
-        for (int i = 0; i < sc.getStorage().getPeriod(); i++) {
+        y = 2021;
+        for (int i = 0; i < storage.getRepPeriod(); i++) {
             XSSFCell cell = row.getCell(c);
-            sc.getStorage().getCostRes()[i] = cell.getNumericCellValue();
+            storage.setCostRes(y, cell.getNumericCellValue());
             c++;
+            y++;
         }
 
         row = sheet.getRow(13);
         c = 2;
-        for (int i = 0; i < sc.getStorage().getPeriod(); i++) {
+        y = 2021;
+        for (int i = 0; i < storage.getRepPeriod(); i++) {
             XSSFCell cell = row.getCell(c);
-            sc.getStorage().getSevCost()[i] = cell.getNumericCellValue();
+            storage.setSevCost(y, cell.getNumericCellValue());
             c++;
+            y++;
         }
 
         row = sheet.getRow(14);
         c = 2;
-        for (int i = 0; i < sc.getStorage().getPeriod(); i++) {
+        y = 2021;
+        for (int i = 0; i < storage.getRepPeriod(); i++) {
             XSSFCell cell = row.getCell(c);
-            sc.getStorage().getDep()[i] = cell.getNumericCellValue();
+            storage.setDep(y, cell.getNumericCellValue());
             c++;
+            y++;
         }
 
         row = sheet.getRow(15);
         c = 2;
-        for (int i = 0; i < sc.getStorage().getPeriod(); i++) {
+        y = 2021;
+        for (int i = 0; i < storage.getRepPeriod(); i++) {
             XSSFCell cell = row.getCell(c);
-            sc.getStorage().getCommCost()[i] = cell.getNumericCellValue();
+            storage.setCommCost(y, cell.getNumericCellValue());
             c++;
+            y++;
         }
 
         row = sheet.getRow(17);
         c = 2;
-        for (int i = 0; i < sc.getStorage().getPeriod(); i++) {
+        y = 2021;
+        for (int i = 0; i < storage.getRepPeriod(); i++) {
             XSSFCell cell = row.getCell(c);
-            sc.getStorage().getOpRev()[i] = cell.getNumericCellValue();
+            storage.setOpRev(y, cell.getNumericCellValue());
             c++;
+            y++;
         }
 
         row = sheet.getRow(19);
         c = 2;
-        for (int i = 0; i < sc.getStorage().getPeriod(); i++) {
+        y = 2021;
+        for (int i = 0; i < storage.getRepPeriod(); i++) {
             XSSFCell cell = row.getCell(c);
-            sc.getStorage().getIntPays()[i] = cell.getNumericCellValue();
+            storage.setIntPays(y, cell.getNumericCellValue());
             c++;
+            y++;
         }
 
         row = sheet.getRow(21);
         c = 2;
-        for (int i = 0; i < sc.getStorage().getPeriod(); i++) {
+        y = 2021;
+        for (int i = 0; i < storage.getRepPeriod(); i++) {
             XSSFCell cell = row.getCell(c);
-            sc.getStorage().getRevBefTax()[i] = cell.getNumericCellValue();
+            storage.setRevBefPays(y, cell.getNumericCellValue());
             c++;
+            y++;
         }
 
         row = sheet.getRow(23);
         c = 2;
-        for (int i = 0; i < sc.getStorage().getPeriod(); i++) {
+        y = 2021;
+        for (int i = 0; i < storage.getRepPeriod(); i++) {
             XSSFCell cell = row.getCell(c);
-            sc.getStorage().getRevTaxPays()[i] = cell.getNumericCellValue();
+            storage.setRevTaxPays(y, cell.getNumericCellValue());
             c++;
+            y++;
         }
 
         row = sheet.getRow(25);
         c = 2;
-        for (int i = 0; i < sc.getStorage().getPeriod(); i++) {
+        y = 2021;
+        for (int i = 0; i < storage.getRepPeriod(); i++) {
             XSSFCell cell = row.getCell(c);
-            sc.getStorage().getCleanRev()[i] = cell.getNumericCellValue();
+            storage.setCleanRev(y, cell.getNumericCellValue());
             c++;
+            y++;
         }
 
         row = sheet.getRow(27);
         c = 2;
-        for (int i = 0; i < sc.getStorage().getPeriod(); i++) {
+        y = 2021;
+        for (int i = 0; i < storage.getRepPeriod(); i++) {
             XSSFCell cell = row.getCell(c);
-            sc.getStorage().getMonFlow()[i] = cell.getNumericCellValue();
+            storage.setMonFlow(y, cell.getNumericCellValue());
             c++;
+            y++;
         }
 
         row = sheet.getRow(28);
         c = 2;
-        for (int i = 0; i < sc.getStorage().getPeriod(); i++) {
+        y = 2021;
+        for (int i = 0; i < storage.getRepPeriod(); i++) {
             XSSFCell cell = row.getCell(c);
-            sc.getStorage().getDiscMonFlow()[i] = cell.getNumericCellValue();
+            storage.setDiscMonFlow(y, cell.getNumericCellValue());
             c++;
+            y++;
         }
     }
 }

@@ -10,24 +10,22 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Arrays;
 
 public class DocWriter {
-    public void writeData(double[][] array) throws IOException {
+    public void writeData(double[] array) throws IOException {
         GraphicBuilder gb = new GraphicBuilder();
         gb.build(array);
         XSSFWorkbook book = new XSSFWorkbook();
         FileOutputStream fos = new FileOutputStream("Monte-Carlo.xlsx");
         XSSFSheet resSheet = book.createSheet("Данные частотных распределений");
 
-        Analyzer.sortArr(array);
+        Arrays.sort(array);
         for (int i = 0; i < array.length; i++) {
             XSSFRow row = resSheet.createRow(i);
             XSSFCell cell1 = row.createCell(0);
             cell1.setCellType(CellType.NUMERIC);
-            cell1.setCellValue(array[i][0]);
-            XSSFCell cell2 = row.createCell(1);
-            cell2.setCellType(CellType.NUMERIC);
-            cell2.setCellValue(array[i][1]);
+            cell1.setCellValue(array[i]);
         }
 
         XSSFSheet analyzingSheet = book.createSheet("ЧР");
