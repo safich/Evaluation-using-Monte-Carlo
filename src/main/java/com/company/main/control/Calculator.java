@@ -3,13 +3,16 @@ package com.company.main.control;
 import com.company.main.model.MainStorage;
 import org.apache.commons.math3.distribution.NormalDistribution;
 import org.apache.poi.ss.formula.functions.Irr;
+import org.jfree.data.json.JSONUtils;
 
 import java.util.HashMap;
+import java.util.Map;
 
 public class Calculator {
     private final MainStorage storage;
     private final int startYear;
     private final int repYear;
+
 
     public Calculator(MainStorage storage) {
         this.storage = storage;
@@ -88,7 +91,7 @@ public class Calculator {
         double revTaxPays = storage.getRevTaxPays(year);
         double capex = storage.getCapex(year);
 
-        double monFlowForYear= revRes - costRes - sevCost - dep - commCost - intPays - revTaxPays - capex;
+        double monFlowForYear = revRes - costRes - sevCost - dep - commCost - intPays - revTaxPays - capex;
 
         return getResForIrr(year, monFlowForYear);
     }
@@ -388,12 +391,15 @@ public class Calculator {
     public double getResForIrr(int year, double discMonFlowForYear) {
         HashMap<Integer, Double> monFlowMap = storage.getMonFlowMap();
         monFlowMap.put(year, discMonFlowForYear);
+
         double[] array = new double[storage.getRepPeriod()];
         int y = startYear;
-        for (double d: array) {
-            d = monFlowMap.get(y);
+
+        for (int i = 0; i < array.length; i++) {
+            array[i] = monFlowMap.get(y);
             y++;
         }
+
         return Irr.irr(array);
     }
 }

@@ -183,97 +183,91 @@ public class CalcDialog extends JDialog {
     }
 
     private void calcIrr(String par, int year, double mean, double standDev, int testsNum) {
-        if (par.equals("Выручка Итого")) {
-            DocWriter docWriter = new DocWriter();
-            try {
-                docWriter.writeData(calculator.calcIrrForRevRes(year, mean, standDev, testsNum));
-                JOptionPane.showMessageDialog(this, "Результаты записаны в файл Monte-Carlo.xlsx", "Успех",JOptionPane.INFORMATION_MESSAGE);
-            } catch (IOException exception) {
-                JOptionPane.showMessageDialog(this, exception.getMessage(), "Ошибка создания файла", JOptionPane.ERROR_MESSAGE);
+        switch (par) {
+            case "Выручка Итого": {
+                try {
+                    new DocWriter().writeData(calculator.calcIrrForRevRes(year, mean, standDev, testsNum));
+                    JOptionPane.showMessageDialog(this, "Результаты записаны в файл Monte-Carlo.xlsx", "Успех",JOptionPane.INFORMATION_MESSAGE);
+                } catch (IOException exception) {
+                    JOptionPane.showMessageDialog(this, exception.getMessage(), "Ошибка создания файла", JOptionPane.ERROR_MESSAGE);
+                }
             }
-        }
-        if (par.equals("Себестоимость Итого")) {
-            DocWriter docWriter = new DocWriter();
-            try {
-                docWriter.writeData(calculator.calcIrrForCostRes(year, mean, standDev, testsNum));
-                JOptionPane.showMessageDialog(this, "Результаты записаны в файл Monte-Carlo.xlsx", "Успех",JOptionPane.INFORMATION_MESSAGE);
-            } catch (IOException exception) {
-                JOptionPane.showMessageDialog(this, exception.getMessage(), "Ошибка создания файла", JOptionPane.ERROR_MESSAGE);
+            case "Себестоимость Итого": {
+                try {
+                    new DocWriter().writeData(calculator.calcIrrForCostRes(year, mean, standDev, testsNum));
+                    JOptionPane.showMessageDialog(this, "Результаты записаны в файл Monte-Carlo.xlsx", "Успех",JOptionPane.INFORMATION_MESSAGE);
+                } catch (IOException exception) {
+                    JOptionPane.showMessageDialog(this, exception.getMessage(), "Ошибка создания файла", JOptionPane.ERROR_MESSAGE);
+                }
             }
-        }
-        if (par.equals("Операционная прибыль")) {
-            DocWriter docWriter = new DocWriter();
-            try {
-                docWriter.writeData(calculator.calcIrrForOpRev(year, mean, standDev, testsNum));
-                JOptionPane.showMessageDialog(this, "Результаты записаны в файл Monte-Carlo.xlsx", "Успех",JOptionPane.INFORMATION_MESSAGE);
-            } catch (IOException exception) {
-                JOptionPane.showMessageDialog(this, exception.getMessage(), "Ошибка создания файла", JOptionPane.ERROR_MESSAGE);
+            case "Операционная прибыль":{
+                try {
+                    new DocWriter().writeData(calculator.calcIrrForOpRev(year, mean, standDev, testsNum));
+                    JOptionPane.showMessageDialog(this, "Результаты записаны в файл Monte-Carlo.xlsx", "Успех",JOptionPane.INFORMATION_MESSAGE);
+                } catch (IOException exception) {
+                    JOptionPane.showMessageDialog(this, exception.getMessage(), "Ошибка создания файла", JOptionPane.ERROR_MESSAGE);
+                }
             }
-        }
-        if (par.equals("Прибыль до налогообложения")) {
-            DocWriter docWriter = new DocWriter();
-            try {
-                docWriter.writeData(calculator.calcIrrForRevBefTax(year, mean, standDev, testsNum));
-                JOptionPane.showMessageDialog(this, "Результаты записаны в файл Monte-Carlo.xlsx", "Успех",JOptionPane.INFORMATION_MESSAGE);
-            } catch (IOException exception) {
-                JOptionPane.showMessageDialog(this, exception.getMessage(), "Ошибка создания файла", JOptionPane.ERROR_MESSAGE);
+            case "Прибыль до налогообложения":{
+                try {
+                    new DocWriter().writeData(calculator.calcIrrForRevBefTax(year, mean, standDev, testsNum));
+                    JOptionPane.showMessageDialog(this, "Результаты записаны в файл Monte-Carlo.xlsx", "Успех",JOptionPane.INFORMATION_MESSAGE);
+                } catch (IOException exception) {
+                    JOptionPane.showMessageDialog(this, exception.getMessage(), "Ошибка создания файла", JOptionPane.ERROR_MESSAGE);
+                }
             }
-        }
-        if(par.equals("Чистая прибыль")) {
-            DocWriter docWriter = new DocWriter();
-            try {
-                docWriter.writeData(calculator.calcIrrForCleanRev(year, mean, standDev, testsNum));
-                JOptionPane.showMessageDialog(this, "Результаты записаны в файл Monte-Carlo.xlsx", "Успех",JOptionPane.INFORMATION_MESSAGE);
-            } catch (IOException exception) {
-                JOptionPane.showMessageDialog(this, exception.getMessage(), "Ошибка создания файла", JOptionPane.ERROR_MESSAGE);
+            case "Чистая прибыль":{
+                try {
+                    new DocWriter().writeData(calculator.calcIrrForCleanRev(year, mean, standDev, testsNum));
+                    JOptionPane.showMessageDialog(this, "Результаты записаны в файл Monte-Carlo.xlsx", "Успех",JOptionPane.INFORMATION_MESSAGE);
+                } catch (IOException exception) {
+                    JOptionPane.showMessageDialog(this, exception.getMessage(), "Ошибка создания файла", JOptionPane.ERROR_MESSAGE);
+                }
             }
         }
     }
 
     private void calcPi(String par, int year, double mean, double standDev, int testsNum) {
-        if (par.equals("Выручка Итого")) {
-            DocWriter docWriter = new DocWriter();
-            try {
-                docWriter.writeData(calculator.calcPiForRevRes(year, mean, standDev, testsNum));
-                JOptionPane.showMessageDialog(this, "Результаты записаны в файл Monte-Carlo.xlsx", "Успех",JOptionPane.INFORMATION_MESSAGE);
-            } catch (IOException exception) {
-                JOptionPane.showMessageDialog(this, exception.getMessage(), "Ошибка создания файла", JOptionPane.ERROR_MESSAGE);
+        switch (par) {
+            case "Выручка Итого": {
+                try {
+                    new DocWriter().writeData(calculator.calcPiForRevRes(year, mean, standDev, testsNum));
+                    JOptionPane.showMessageDialog(this, "Результаты записаны в файл Monte-Carlo.xlsx", "Успех",JOptionPane.INFORMATION_MESSAGE);
+                } catch (IOException exception) {
+                    JOptionPane.showMessageDialog(this, exception.getMessage(), "Ошибка создания файла", JOptionPane.ERROR_MESSAGE);
+                }
             }
-        }
-        if (par.equals("Себестоимость Итого")) {
-            DocWriter docWriter = new DocWriter();
-            try {
-                docWriter.writeData(calculator.calcPiForCostRes(year, mean, standDev, testsNum));
-                JOptionPane.showMessageDialog(this, "Результаты записаны в файл Monte-Carlo.xlsx", "Успех",JOptionPane.INFORMATION_MESSAGE);
-            } catch (IOException exception) {
-                JOptionPane.showMessageDialog(this, exception.getMessage(), "Ошибка создания файла", JOptionPane.ERROR_MESSAGE);
+            case "Себестоимость Итого": {
+                try {
+                    new DocWriter().writeData(calculator.calcPiForCostRes(year, mean, standDev, testsNum));
+                    JOptionPane.showMessageDialog(this, "Результаты записаны в файл Monte-Carlo.xlsx", "Успех",JOptionPane.INFORMATION_MESSAGE);
+                } catch (IOException exception) {
+                    JOptionPane.showMessageDialog(this, exception.getMessage(), "Ошибка создания файла", JOptionPane.ERROR_MESSAGE);
+                }
             }
-        }
-        if (par.equals("Операционная прибыль")) {
-            DocWriter docWriter = new DocWriter();
-            try {
-                docWriter.writeData(calculator.calcPiForOpRev(year, mean, standDev, testsNum));
-                JOptionPane.showMessageDialog(this, "Результаты записаны в файл Monte-Carlo.xlsx", "Успех",JOptionPane.INFORMATION_MESSAGE);
-            } catch (IOException exception) {
-                JOptionPane.showMessageDialog(this, exception.getMessage(), "Ошибка создания файла", JOptionPane.ERROR_MESSAGE);
+            case "Операционная прибыль":{
+                try {
+                    new DocWriter().writeData(calculator.calcPiForOpRev(year, mean, standDev, testsNum));
+                    JOptionPane.showMessageDialog(this, "Результаты записаны в файл Monte-Carlo.xlsx", "Успех",JOptionPane.INFORMATION_MESSAGE);
+                } catch (IOException exception) {
+                    JOptionPane.showMessageDialog(this, exception.getMessage(), "Ошибка создания файла", JOptionPane.ERROR_MESSAGE);
+                }
             }
-        }
-        if (par.equals("Прибыль до налогообложения")) {
-            DocWriter docWriter = new DocWriter();
-            try {
-                docWriter.writeData(calculator.calcPiForRevBefTax(year, mean, standDev, testsNum));
-                JOptionPane.showMessageDialog(this, "Результаты записаны в файл Monte-Carlo.xlsx", "Успех",JOptionPane.INFORMATION_MESSAGE);
-            } catch (IOException exception) {
-                JOptionPane.showMessageDialog(this, exception.getMessage(), "Ошибка создания файла", JOptionPane.ERROR_MESSAGE);
+            case "Прибыль до налогообложения":{
+                try {
+                    new DocWriter().writeData(calculator.calcPiForRevBefTax(year, mean, standDev, testsNum));
+                    JOptionPane.showMessageDialog(this, "Результаты записаны в файл Monte-Carlo.xlsx", "Успех",JOptionPane.INFORMATION_MESSAGE);
+                } catch (IOException exception) {
+                    JOptionPane.showMessageDialog(this, exception.getMessage(), "Ошибка создания файла", JOptionPane.ERROR_MESSAGE);
+                }
             }
-        }
-        if(par.equals("Чистая прибыль")) {
-            DocWriter docWriter = new DocWriter();
-            try {
-                docWriter.writeData(calculator.calcPiForCleanRev(year, mean, standDev, testsNum));
-                JOptionPane.showMessageDialog(this, "Результаты записаны в файл Monte-Carlo.xlsx", "Успех",JOptionPane.INFORMATION_MESSAGE);
-            } catch (IOException exception) {
-                JOptionPane.showMessageDialog(this, exception.getMessage(), "Ошибка создания файла", JOptionPane.ERROR_MESSAGE);
+            case "Чистая прибыль":{
+                try {
+                    new DocWriter().writeData(calculator.calcPiForCleanRev(year, mean, standDev, testsNum));
+                    JOptionPane.showMessageDialog(this, "Результаты записаны в файл Monte-Carlo.xlsx", "Успех",JOptionPane.INFORMATION_MESSAGE);
+                } catch (IOException exception) {
+                    JOptionPane.showMessageDialog(this, exception.getMessage(), "Ошибка создания файла", JOptionPane.ERROR_MESSAGE);
+                }
             }
         }
     }

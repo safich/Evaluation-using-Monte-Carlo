@@ -151,5 +151,17 @@ public class DocReader {
             c++;
             y++;
         }
+
+        row = sheet.getRow(30);
+        XSSFCell npvCell = row.getCell(2);
+        storage.setNpv(npvCell.getNumericCellValue());
+
+        row = sheet.getRow(31);
+        XSSFCell irrCell = row.getCell(2);
+        storage.setIrr(irrCell.getNumericCellValue());
+
+        row = sheet.getRow(32);
+        XSSFCell piCell = row.getCell(2);
+        storage.setPi(piCell.getNumericCellValue());
     }
 }

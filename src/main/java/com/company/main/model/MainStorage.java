@@ -18,6 +18,9 @@ public class MainStorage {
     private HashMap<Integer, Double> discMonFlow;
     private final double discRate;
     private final int repPeriod;
+    private double npv;
+    private double irr;
+    private double pi;
 
     public MainStorage() {
         capex = new HashMap<>();
@@ -90,6 +93,18 @@ public class MainStorage {
         discMonFlow.put(year, value);
     }
 
+    public void setNpv(double npv) {
+        this.npv = npv;
+    }
+
+    public void setIrr(double irr) {
+        this.irr = irr;
+    }
+
+    public void setPi(double pi) {
+        this.pi = pi;
+    }
+
     public double getCapex(int year) {
         return capex.get(year);
     }
@@ -148,6 +163,18 @@ public class MainStorage {
 
     public int getRepPeriod() {
         return repPeriod;
+    }
+
+    public double getNpv() {
+        return npv;
+    }
+
+    public double getIrr() {
+        return irr;
+    }
+
+    public double getPi() {
+        return pi;
     }
 
     public HashMap<Integer, Double> getMonFlowMap() {
