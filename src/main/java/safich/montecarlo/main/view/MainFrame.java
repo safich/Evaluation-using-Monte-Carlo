@@ -1,15 +1,14 @@
-package com.company.main.view;
+package safich.montecarlo.main.view;
 
-
-import com.company.main.control.Calculator;
-import com.company.main.model.DocReader;
-import com.company.main.model.MainStorage;
+import safich.montecarlo.main.control.Calculator;
+import safich.montecarlo.main.model.DocReader;
+import safich.montecarlo.main.model.MainStorage;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
+
 
 public class MainFrame extends JFrame{
     private final MainStorage storage;
@@ -91,12 +90,11 @@ public class MainFrame extends JFrame{
             DocReader docReader = new DocReader(storage);
             try {
                 docReader.readData(fileChooser.getSelectedFile());
-            } catch (IOException ex) {
+            } catch (Exception ex) {
                 JOptionPane.showMessageDialog(MainFrame.this, ex.getMessage());
             }
             new Table(storage);
             calculator = new Calculator(storage);
-
             listModel.removeAllElements();
             listModel.addElement("NPV = " + Math.round(calculator.calcStorageNpv()));
             listModel.addElement("IRR = " + String.format("%.2f", calculator.calcStorageIrr() * 100) + "%");

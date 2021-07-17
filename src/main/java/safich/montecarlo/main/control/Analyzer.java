@@ -1,4 +1,4 @@
-package com.company.main.control;
+package safich.montecarlo.main.control;
 
 public class Analyzer {
     public static double getMaxValue(double[] array) {

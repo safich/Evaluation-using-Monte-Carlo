@@ -1,4 +1,4 @@
-package com.company.main.control;
+package safich.montecarlo.main.control;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartUtils;

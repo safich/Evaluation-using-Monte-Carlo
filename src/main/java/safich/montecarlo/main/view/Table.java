@@ -1,7 +1,7 @@
-package com.company.main.view;
+package safich.montecarlo.main.view;
 
-import com.company.main.model.MainStorage;
-import com.company.main.model.TableModel;
+import safich.montecarlo.main.model.MainStorage;
+import safich.montecarlo.main.model.TableModel;
 
 import javax.swing.*;
 import javax.swing.table.TableColumn;

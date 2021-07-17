@@ -1,7 +1,7 @@
-package com.company.main.control;
+package safich.montecarlo.main.control;
 
-import com.company.main.model.DocReader;
-import com.company.main.model.MainStorage;
+import safich.montecarlo.main.model.DocReader;
+import safich.montecarlo.main.model.MainStorage;
 import org.junit.*;
 
 import java.io.File;

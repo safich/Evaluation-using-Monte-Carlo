@@ -1,7 +1,7 @@
-package com.company.main.view;
+package safich.montecarlo.main.view;
 
-import com.company.main.control.Calculator;
-import com.company.main.model.DocWriter;
+import safich.montecarlo.main.control.Calculator;
+import safich.montecarlo.main.model.DocWriter;
 
 import javax.swing.*;
 import java.awt.*;

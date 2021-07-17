@@ -1,7 +1,7 @@
-package com.company.main.model;
+package safich.montecarlo.main.model;
 
-import com.company.main.control.Analyzer;
-import com.company.main.control.GraphicBuilder;
+import safich.montecarlo.main.control.Analyzer;
+import safich.montecarlo.main.control.GraphicBuilder;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;

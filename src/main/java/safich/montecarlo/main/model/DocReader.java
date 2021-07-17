@@ -1,4 +1,4 @@
-package com.company.main.model;
+package safich.montecarlo.main.model;
 
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;

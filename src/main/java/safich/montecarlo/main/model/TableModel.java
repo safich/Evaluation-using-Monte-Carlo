@@ -1,4 +1,4 @@
-package com.company.main.model;
+package safich.montecarlo.main.model;
 
 import javax.swing.table.AbstractTableModel;
 

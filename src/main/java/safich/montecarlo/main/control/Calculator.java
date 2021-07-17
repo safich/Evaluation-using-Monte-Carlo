@@ -1,12 +1,10 @@
-package com.company.main.control;
+package safich.montecarlo.main.control;
 
-import com.company.main.model.MainStorage;
+import safich.montecarlo.main.model.MainStorage;
 import org.apache.commons.math3.distribution.NormalDistribution;
 import org.apache.poi.ss.formula.functions.Irr;
-import org.jfree.data.json.JSONUtils;
 
 import java.util.HashMap;
-import java.util.Map;
 
 public class Calculator {
     private final MainStorage storage;
