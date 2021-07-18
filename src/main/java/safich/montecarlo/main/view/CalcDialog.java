@@ -142,7 +142,8 @@ public class CalcDialog extends JDialog {
             case "Выручка Итого": {
                 try {
                     new DocWriter().writeData(calculator.calcNpvForRevRes(year, mean, standDev, testsNum));
-                    JOptionPane.showMessageDialog(this, "Результаты записаны в файл Monte-Carlo.xlsx", "Успех",JOptionPane.INFORMATION_MESSAGE);
+                    getSuccessMessage();
+                    return;
                 } catch (IOException exception) {
                     JOptionPane.showMessageDialog(this, exception.getMessage(), "Ошибка создания файла", JOptionPane.ERROR_MESSAGE);
                 }
@@ -150,7 +151,8 @@ public class CalcDialog extends JDialog {
             case "Себестоимость Итого": {
                 try {
                     new DocWriter().writeData(calculator.calcNpvForCostRes(year, mean, standDev, testsNum));
-                    JOptionPane.showMessageDialog(this, "Результаты записаны в файл Monte-Carlo.xlsx", "Успех",JOptionPane.INFORMATION_MESSAGE);
+                    getSuccessMessage();
+                    return;
                 } catch (IOException exception) {
                     JOptionPane.showMessageDialog(this, exception.getMessage(), "Ошибка создания файла", JOptionPane.ERROR_MESSAGE);
                 }
@@ -158,7 +160,8 @@ public class CalcDialog extends JDialog {
             case "Операционная прибыль": {
                 try {
                     new DocWriter().writeData(calculator.calcNpvForOpRev(year, mean, standDev, testsNum));
-                    JOptionPane.showMessageDialog(this, "Результаты записаны в файл Monte-Carlo.xlsx", "Успех",JOptionPane.INFORMATION_MESSAGE);
+                    getSuccessMessage();
+                    return;
                 } catch (IOException exception) {
                     JOptionPane.showMessageDialog(this, exception.getMessage(), "Ошибка создания файла", JOptionPane.ERROR_MESSAGE);
                 }
@@ -166,7 +169,8 @@ public class CalcDialog extends JDialog {
             case "Прибыль до налогообложения": {
                 try {
                     new DocWriter().writeData(calculator.calcNpvForRevBefTax(year, mean, standDev, testsNum));
-                    JOptionPane.showMessageDialog(this, "Результаты записаны в файл Monte-Carlo.xlsx", "Успех",JOptionPane.INFORMATION_MESSAGE);
+                    getSuccessMessage();
+                    return;
                 } catch (IOException exception) {
                     JOptionPane.showMessageDialog(this, exception.getMessage(), "Ошибка создания файла", JOptionPane.ERROR_MESSAGE);
                 }
@@ -174,7 +178,8 @@ public class CalcDialog extends JDialog {
             case "Чистая прибыль": {
                 try {
                     new DocWriter().writeData(calculator.calcNpvForCleanRev(year, mean, standDev, testsNum));
-                    JOptionPane.showMessageDialog(this, "Результаты записаны в файл Monte-Carlo.xlsx", "Успех",JOptionPane.INFORMATION_MESSAGE);
+                    getSuccessMessage();
+                    return;
                 } catch (IOException exception) {
                     JOptionPane.showMessageDialog(this, exception.getMessage(), "Ошибка создания файла", JOptionPane.ERROR_MESSAGE);
                 }
@@ -187,7 +192,8 @@ public class CalcDialog extends JDialog {
             case "Выручка Итого": {
                 try {
                     new DocWriter().writeData(calculator.calcIrrForRevRes(year, mean, standDev, testsNum));
-                    JOptionPane.showMessageDialog(this, "Результаты записаны в файл Monte-Carlo.xlsx", "Успех",JOptionPane.INFORMATION_MESSAGE);
+                    getSuccessMessage();
+                    return;
                 } catch (IOException exception) {
                     JOptionPane.showMessageDialog(this, exception.getMessage(), "Ошибка создания файла", JOptionPane.ERROR_MESSAGE);
                 }
@@ -195,7 +201,8 @@ public class CalcDialog extends JDialog {
             case "Себестоимость Итого": {
                 try {
                     new DocWriter().writeData(calculator.calcIrrForCostRes(year, mean, standDev, testsNum));
-                    JOptionPane.showMessageDialog(this, "Результаты записаны в файл Monte-Carlo.xlsx", "Успех",JOptionPane.INFORMATION_MESSAGE);
+                    getSuccessMessage();
+                    return;
                 } catch (IOException exception) {
                     JOptionPane.showMessageDialog(this, exception.getMessage(), "Ошибка создания файла", JOptionPane.ERROR_MESSAGE);
                 }
@@ -203,7 +210,8 @@ public class CalcDialog extends JDialog {
             case "Операционная прибыль":{
                 try {
                     new DocWriter().writeData(calculator.calcIrrForOpRev(year, mean, standDev, testsNum));
-                    JOptionPane.showMessageDialog(this, "Результаты записаны в файл Monte-Carlo.xlsx", "Успех",JOptionPane.INFORMATION_MESSAGE);
+                    getSuccessMessage();
+                    return;
                 } catch (IOException exception) {
                     JOptionPane.showMessageDialog(this, exception.getMessage(), "Ошибка создания файла", JOptionPane.ERROR_MESSAGE);
                 }
@@ -211,7 +219,8 @@ public class CalcDialog extends JDialog {
             case "Прибыль до налогообложения":{
                 try {
                     new DocWriter().writeData(calculator.calcIrrForRevBefTax(year, mean, standDev, testsNum));
-                    JOptionPane.showMessageDialog(this, "Результаты записаны в файл Monte-Carlo.xlsx", "Успех",JOptionPane.INFORMATION_MESSAGE);
+                    getSuccessMessage();
+                    return;
                 } catch (IOException exception) {
                     JOptionPane.showMessageDialog(this, exception.getMessage(), "Ошибка создания файла", JOptionPane.ERROR_MESSAGE);
                 }
@@ -219,7 +228,8 @@ public class CalcDialog extends JDialog {
             case "Чистая прибыль":{
                 try {
                     new DocWriter().writeData(calculator.calcIrrForCleanRev(year, mean, standDev, testsNum));
-                    JOptionPane.showMessageDialog(this, "Результаты записаны в файл Monte-Carlo.xlsx", "Успех",JOptionPane.INFORMATION_MESSAGE);
+                    getSuccessMessage();
+                    return;
                 } catch (IOException exception) {
                     JOptionPane.showMessageDialog(this, exception.getMessage(), "Ошибка создания файла", JOptionPane.ERROR_MESSAGE);
                 }
@@ -232,7 +242,8 @@ public class CalcDialog extends JDialog {
             case "Выручка Итого": {
                 try {
                     new DocWriter().writeData(calculator.calcPiForRevRes(year, mean, standDev, testsNum));
-                    JOptionPane.showMessageDialog(this, "Результаты записаны в файл Monte-Carlo.xlsx", "Успех",JOptionPane.INFORMATION_MESSAGE);
+                    getSuccessMessage();
+                    return;
                 } catch (IOException exception) {
                     JOptionPane.showMessageDialog(this, exception.getMessage(), "Ошибка создания файла", JOptionPane.ERROR_MESSAGE);
                 }
@@ -240,7 +251,8 @@ public class CalcDialog extends JDialog {
             case "Себестоимость Итого": {
                 try {
                     new DocWriter().writeData(calculator.calcPiForCostRes(year, mean, standDev, testsNum));
-                    JOptionPane.showMessageDialog(this, "Результаты записаны в файл Monte-Carlo.xlsx", "Успех",JOptionPane.INFORMATION_MESSAGE);
+                    getSuccessMessage();
+                    return;
                 } catch (IOException exception) {
                     JOptionPane.showMessageDialog(this, exception.getMessage(), "Ошибка создания файла", JOptionPane.ERROR_MESSAGE);
                 }
@@ -248,7 +260,8 @@ public class CalcDialog extends JDialog {
             case "Операционная прибыль":{
                 try {
                     new DocWriter().writeData(calculator.calcPiForOpRev(year, mean, standDev, testsNum));
-                    JOptionPane.showMessageDialog(this, "Результаты записаны в файл Monte-Carlo.xlsx", "Успех",JOptionPane.INFORMATION_MESSAGE);
+                    getSuccessMessage();
+                    return;
                 } catch (IOException exception) {
                     JOptionPane.showMessageDialog(this, exception.getMessage(), "Ошибка создания файла", JOptionPane.ERROR_MESSAGE);
                 }
@@ -256,7 +269,8 @@ public class CalcDialog extends JDialog {
             case "Прибыль до налогообложения":{
                 try {
                     new DocWriter().writeData(calculator.calcPiForRevBefTax(year, mean, standDev, testsNum));
-                    JOptionPane.showMessageDialog(this, "Результаты записаны в файл Monte-Carlo.xlsx", "Успех",JOptionPane.INFORMATION_MESSAGE);
+                    getSuccessMessage();
+                    return;
                 } catch (IOException exception) {
                     JOptionPane.showMessageDialog(this, exception.getMessage(), "Ошибка создания файла", JOptionPane.ERROR_MESSAGE);
                 }
@@ -264,11 +278,16 @@ public class CalcDialog extends JDialog {
             case "Чистая прибыль":{
                 try {
                     new DocWriter().writeData(calculator.calcPiForCleanRev(year, mean, standDev, testsNum));
-                    JOptionPane.showMessageDialog(this, "Результаты записаны в файл Monte-Carlo.xlsx", "Успех",JOptionPane.INFORMATION_MESSAGE);
+                    getSuccessMessage();
+                    return;
                 } catch (IOException exception) {
                     JOptionPane.showMessageDialog(this, exception.getMessage(), "Ошибка создания файла", JOptionPane.ERROR_MESSAGE);
                 }
             }
         }
+    }
+
+    private void getSuccessMessage() {
+        JOptionPane.showMessageDialog(this, "Результаты записаны в файл Monte-Carlo.xlsx", "Успех",JOptionPane.INFORMATION_MESSAGE);
     }
 }
